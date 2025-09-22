@@ -3,6 +3,15 @@ from django.urls import reverse_lazy
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 from .models import Author, Book
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from django_filters import rest_framework as filters
+from rest_framework.filters import SearchFilter, OrderingFilter
+from .models import Book
+from .serializers import BookSerializer
+
+
+
 
 # --------------------
 # Author Views
