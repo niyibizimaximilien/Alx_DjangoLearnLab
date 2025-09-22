@@ -88,4 +88,6 @@ class BookDeleteView(DeleteView):
     model = Book
     template_name = 'books/book_confirm_delete.html'
     success_url = reverse_lazy('book-list')
+    
+    'filters.OrderingFilter'
 
