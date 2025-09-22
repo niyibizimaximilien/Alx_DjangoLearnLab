@@ -19,3 +19,4 @@ urlpatterns = [
     path('books/<int:pk>/update/', BookUpdateView.as_view(), name='book-update'),  # <-- added
     path('books/<int:pk>/delete/', BookDeleteView.as_view(), name='book-delete'),  # <-- added
 ]
+'books/update', 'books/delete'
