@@ -1,5 +1,7 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+
 from .models import Author, Book
 
 # --------------------
