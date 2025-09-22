@@ -90,4 +90,5 @@ class BookDeleteView(DeleteView):
     success_url = reverse_lazy('book-list')
     
     'filters.OrderingFilter'
+    "filters.SearchFilter"
 
