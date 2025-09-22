@@ -44,10 +44,15 @@ class AuthorDeleteView(DeleteView):
 # Book Views
 # --------------------
 
-class BookListView(ListView):
-    model = Book
-    template_name = 'books/book_list.html'
-    context_object_name = 'books'
+class BookListView(generics.ListAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['title', 'publication_year', 'author']
+    search_fields = ['title', 'author__name']
+    ordering_fields = ['title', 'publication_year']
+    ordering = ['title']
 
 
 class BookDetailView(DetailView):
@@ -74,3 +79,4 @@ class BookDeleteView(DeleteView):
     model = Book
     template_name = 'books/book_confirm_delete.html'
     success_url = reverse_lazy('book-list')
+
