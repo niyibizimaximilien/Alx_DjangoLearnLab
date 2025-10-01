@@ -1,0 +1,11 @@
+{% extends "blog/base.html" %}
+{% load static %}
+{% block content %}
+<h2>Create account</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Register</button>
+</form>
+{% for message in messages %} <p>{{ message }}</p> {% endfor %}
+{% endblock %}
