@@ -14,3 +14,20 @@ urlpatterns = [
     path('posts/<int:pk>/edit/', views.PostUpdateView.as_view(), name='post-update'),
     path('posts/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post-delete'),
 ]
+
+from django.urls import path
+from . import views
+
+app_name = 'blog'
+
+urlpatterns = [
+    # CRUD URLs
+    path('post/new/', views.PostCreateView.as_view(), name='post-create'),
+    path('post/<int:pk>/', views.PostDetailView.as_view(), name='post-detail'),
+    path('post/<int:pk>/update/', views.PostUpdateView.as_view(), name='post-update'),
+    path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post-delete'),
+
+    # Optional: list view
+    path('', views.PostListView.as_view(), name='post-list'),
+]
+
