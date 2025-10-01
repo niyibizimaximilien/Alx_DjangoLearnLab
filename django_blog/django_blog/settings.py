@@ -28,6 +28,23 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+# Add at the end or update existing entries
+INSTALLED_APPS += [
+    # 'blog' should already be there
+    'crispy_forms',   # optional but helps forms look nicer if you install it
+]
+
+# Redirects
+LOGIN_URL = 'blog:login'
+LOGIN_REDIRECT_URL = 'blog:profile'
+LOGOUT_REDIRECT_URL = 'blog:login'
+
+# Media (for profile pictures)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
+
 # Application definition
 
 INSTALLED_APPS = [
