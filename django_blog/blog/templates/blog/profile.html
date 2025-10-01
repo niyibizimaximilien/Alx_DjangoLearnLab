@@ -1,0 +1,18 @@
+{% extends "blog/base.html" %}
+{% block content %}
+<h2>My profile</h2>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <h3>User data</h3>
+  {{ u_form.as_p }}
+  <h3>Profile</h3>
+  {{ p_form.as_p }}
+  <button type="submit">Save changes</button>
+</form>
+
+{% if request.user.profile.avatar %}
+  <img src="{{ request.user.profile.avatar.url }}" alt="avatar" style="max-width:200px;">
+{% endif %}
+
+{% for message in messages %} <p>{{ message }}</p> {% endfor %}
+{% endblock %}

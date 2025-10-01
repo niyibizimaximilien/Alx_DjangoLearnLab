@@ -12,6 +12,18 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+# settings.py
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # global static folder
+]
+
+# where Django collects all static files after running `collectstatic`
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -46,6 +58,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Application definition
+INSTALLED_APPS += [
+    'blog',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
