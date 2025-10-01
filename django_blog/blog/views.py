@@ -154,3 +154,28 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         post = self.get_object()
         return self.request.user == post.author
 
+from django.db.models import Q
+from taggit.models import Tag
+from django.views.generic import ListView
+from .models import Post
+
+# List posts by tag
+class TaggedPostListView(ListView):
+    model = Post
+    template_name = 'blog/tagged_posts.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return Post.objects.filter(tags__name__in=[self.kwargs.get('tag_name')])
+
+# Search posts
+class SearchResultsView(ListView):
+    model = Post
+    template_name = 'blog/search_results.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        return Post.objects.filter(
+            Q(title__icontains=query) | Q(content__icontains=query) | Q(tags__name__icontains=query)
+        ).distinct()

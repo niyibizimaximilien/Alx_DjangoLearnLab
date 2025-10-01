@@ -61,3 +61,7 @@ urlpatterns = [
     # Optional: list view
     path('', views.PostListView.as_view(), name='post-list'),
 ]
+urlpatterns += [
+    path('tags/<str:tag_name>/', views.TaggedPostListView.as_view(), name='tagged-posts'),
+    path('search/', views.SearchResultsView.as_view(), name='search-results'),
+]

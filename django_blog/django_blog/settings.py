@@ -62,6 +62,8 @@ INSTALLED_APPS += [
     'blog',
 ]
 
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -70,6 +72,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog',
+    'taggit',
 ]
 STATIC_URL = '/static/'
 
