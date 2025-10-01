@@ -65,3 +65,16 @@ urlpatterns += [
     path('tags/<str:tag_name>/', views.TaggedPostListView.as_view(), name='tagged-posts'),
     path('search/', views.SearchResultsView.as_view(), name='search-results'),
 ]
+
+
+from django.urls import path
+from . import views
+
+app_name = 'blog'
+
+urlpatterns = [
+    # ... other URLs like post CRUD and comments
+
+    # Tagging
+    path('tags/<slug:tag_slug>/', views.PostByTagListView.as_view(), name='posts-by-tag'),
+]
