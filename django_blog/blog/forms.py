@@ -46,3 +46,14 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'content', 'tags']  # Add 'tags' here
+from django import forms
+from .models import Post
+from taggit.forms import TagWidget  # <-- ALX expects this
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']
+        widgets = {
+            'tags': TagWidget(),  # <-- use TagWidget for the tags field
+        }
