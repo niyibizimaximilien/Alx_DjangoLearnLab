@@ -4,8 +4,8 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 
-from .serializers import RegisterSerializer, UserSerializer
-from .models import CustomUser  # ✅ for CustomUser.objects.all()
+from .serializers import RegisterSerializer, UserSerializer, PostSerializer
+from .models import CustomUser, Post  # ✅ for CustomUser.objects.all()
 
 User = get_user_model()
 
@@ -20,9 +20,10 @@ class RegisterView(generics.GenericAPIView):  # ✅ uses GenericAPIView
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        token, created = Token.objects.get_or_create(user=user)
         return Response({
             "user": UserSerializer(user).data,
-            "token": user.token  # token created in serializer
+            "token": token.key  # token created here
         }, status=status.HTTP_201_CREATED)
 
 
@@ -86,3 +87,15 @@ class UnfollowUserView(generics.GenericAPIView):  # ✅ GenericAPIView
 
         request.user.following.remove(target_user)
         return Response({"success": f"You have unfollowed {target_user.username}"})
+
+# Removed duplicate imports for generics, permissions, Post, and PostSerializer
+from .serializers import PostSerializer
+
+class FeedView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        following_users = user.following.all()  # ✅ get users current user follows
+        return Post.objects.filter(author__in=following_users).order_by('-created_at')  # ✅ explicit filter + order
