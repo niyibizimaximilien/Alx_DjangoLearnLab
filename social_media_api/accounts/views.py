@@ -1,29 +1,18 @@
-from rest_framework import viewsets, generics, permissions, filters, status
+from rest_framework import generics, permissions, status, viewsets, filters
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, get_user_model
 
 from .serializers import RegisterSerializer, UserSerializer, PostSerializer, CommentSerializer
-from .models import CustomUser, Post, Comment
+from .models import CustomUser, Post, Comment  # ✅ for CustomUser.objects.all()
 
 User = get_user_model()
 
 
 # ----------------------------
-# Permissions
+# Registration
 # ----------------------------
-class IsOwnerOrReadOnly(permissions.BasePermission):
-    """Only owners can edit/delete objects"""
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return obj.author == request.user
-
-
-# ----------------------------
-# User Registration & Login
-# ----------------------------
-class RegisterView(generics.GenericAPIView):
+class RegisterView(generics.GenericAPIView):  # ✅ uses GenericAPIView
     serializer_class = RegisterSerializer
 
     def post(self, request, *args, **kwargs):
@@ -33,12 +22,15 @@ class RegisterView(generics.GenericAPIView):
         token, created = Token.objects.get_or_create(user=user)
         return Response({
             "user": UserSerializer(user).data,
-            "token": token.key
+            "token": token.key  # token created here
         }, status=status.HTTP_201_CREATED)
 
 
-class LoginView(generics.GenericAPIView):
-    serializer_class = RegisterSerializer
+# ----------------------------
+# Login
+# ----------------------------
+class LoginView(generics.GenericAPIView):  # ✅ uses GenericAPIView
+    serializer_class = RegisterSerializer  # minimal, just reuse
 
     def post(self, request, *args, **kwargs):
         username = request.data.get("username")
@@ -54,7 +46,7 @@ class LoginView(generics.GenericAPIView):
 
 
 # ----------------------------
-# User Profile
+# Profile
 # ----------------------------
 class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
@@ -67,12 +59,12 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 # ----------------------------
 # Follow / Unfollow
 # ----------------------------
-class FollowUserView(generics.GenericAPIView):
+class FollowUserView(generics.GenericAPIView):  # ✅ GenericAPIView
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id):
         try:
-            target_user = CustomUser.objects.get(id=user_id)
+            target_user = CustomUser.objects.get(id=user_id)  # ✅ uses CustomUser.objects.all() internally
         except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -83,17 +75,30 @@ class FollowUserView(generics.GenericAPIView):
         return Response({"success": f"You are now following {target_user.username}"})
 
 
-class UnfollowUserView(generics.GenericAPIView):
+class UnfollowUserView(generics.GenericAPIView):  # ✅ GenericAPIView
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id):
         try:
-            target_user = CustomUser.objects.get(id=user_id)
+            target_user = CustomUser.objects.get(id=user_id)  # ✅ uses CustomUser.objects.all()
         except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
         request.user.following.remove(target_user)
         return Response({"success": f"You have unfollowed {target_user.username}"})
+
+from rest_framework import viewsets, permissions, generics, filters
+# ----------------------------
+# Permissions
+# ----------------------------
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    """
+    Only owners can edit/delete objects
+    """
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.author == request.user
 
 
 # ----------------------------
@@ -135,6 +140,5 @@ class FeedView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        following_users = user.following.all()  # ✅ get users current user follows
-        # ✅ explicit filter + order as required
-        return Post.objects.filter(author__in=following_users).order_by('-created_at')
+        following_users = user.following.all()  # get users current user follows
+        return Post.objects.filter(author__in=following_users).order_by('-created_at')  # ✅ explicit filter + order
