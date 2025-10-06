@@ -131,11 +131,14 @@ class CommentViewSet(viewsets.ModelViewSet):
 # Feed View
 # ----------------------------
 class FeedView(generics.ListAPIView):
+    """
+    Returns posts from users that the current user follows,
+    ordered by creation date descending (newest first)
+    """
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        following_users = user.following.all()  # ✅ get users current user follows
-        # ✅ exact filter required by the checker
-        return Post.objects.filter(author__in=following_users).order_by('-created_at')
+        following_users = user.following.all()  # get users current user follows
+        return Post.objects.filter(author__in=following_users).order_by('-created_at')  # ✅ explicit filter + order
