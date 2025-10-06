@@ -16,6 +16,18 @@ ALLOWED_HOSTS = []
 # Application definition
 # ----------------------------------------------------------------
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10
+}
+
+
 INSTALLED_APPS = [
     # Django default apps
     'django.contrib.admin',
@@ -31,6 +43,8 @@ INSTALLED_APPS = [
 
     # Local apps
     'accounts',
+    'posts',
+    
 ]
 
 MIDDLEWARE = [
