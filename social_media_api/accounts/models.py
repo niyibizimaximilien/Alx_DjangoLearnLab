@@ -1,11 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-
 def user_profile_pic_upload_path(instance, filename):
     # where profile pictures will be stored
     return f'profile_pics/user_{instance.id}/{filename}'
-
 
 class CustomUser(AbstractUser):
     bio = models.TextField(blank=True)
