@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, permissions, filters, generics
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 
@@ -39,5 +39,5 @@ class FeedView(generics.ListAPIView):
     def get_queryset(self):
         # posts from users current user follows
         user = self.request.user
-        return Post.objects.filter(author__in=user.following.all()).order_by('-created_at')
-
+        following_users = user.following.all()
+        return Post.objects.filter(author__in=following_users).order_by('-created_at')
